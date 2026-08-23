@@ -5,6 +5,8 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
+
 
 const execAsync = promisify(exec);
 
@@ -27,12 +29,12 @@ function appendLog(entry: {
 // Destructive-command blocklist
 // Each entry has a human-readable reason alongside the pattern.
 // ---------------------------------------------------------------------------
-interface BlocklistEntry {
+export interface BlocklistEntry {
   pattern: RegExp;
   reason: string;
 }
 
-const BLOCKLIST: BlocklistEntry[] = [
+export const BLOCKLIST: BlocklistEntry[] = [
   // File-system nukes
   { pattern: /rm\s+(-[a-z]*f[a-z]*|-[a-z]*r[a-z]*f[a-z]*|--force|--recursive)/i, reason: "Recursive or forced file removal (rm -rf / rm -f)" },
   { pattern: /\brm\b.*\/\s*$/i,                reason: "Removal targeting the filesystem root" },
@@ -92,6 +94,14 @@ function checkBlocklist(command: string): BlocklistEntry | null {
     }
   }
   return null;
+}
+
+/**
+ * Public helper — returns the first matching BlocklistEntry if the command
+ * is destructive, or null if it's safe. Import this in demo.ts or tests.
+ */
+export function isBlocked(command: string): BlocklistEntry | null {
+  return checkBlocklist(command);
 }
 
 // ---------------------------------------------------------------------------
@@ -209,7 +219,14 @@ async function main() {
   process.stderr.write("agent-guardrail MCP server running on stdio\n");
 }
 
-main().catch((err) => {
-  process.stderr.write(`Fatal: ${err}\n`);
-  process.exit(1);
-});
+const isMain = process.argv[1] && (
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url)) ||
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url).replace(/\.ts$/, ".js"))
+);
+
+if (isMain) {
+  main().catch((err) => {
+    process.stderr.write(`Fatal: ${err}\n`);
+    process.exit(1);
+  });
+}
