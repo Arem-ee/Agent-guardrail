@@ -1,0 +1,4 @@
+node_modules/
+dist/
+guardrail.log
+*.js.map
