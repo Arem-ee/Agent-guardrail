@@ -1,4 +1,4 @@
-# epas-mcp-server
+# agent-guardrail
 
 Minimal MCP server exposing a `run_command` tool with destructive-command guardrails.
 
@@ -96,9 +96,9 @@ Add to your `claude_desktop_config.json`:
 ```jsonc
 {
   "mcpServers": {
-    "epas-guardrail": {
+    "agent-guardrail": {
       "command": "node",
-      "args": ["C:/Users/USER/Documents/epas/dist/index.js"]
+      "args": ["C:/Users/USER/Documents/agent-guardrail/dist/index.js"]
     }
   }
 }

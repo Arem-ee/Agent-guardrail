@@ -98,7 +98,7 @@ function checkBlocklist(command: string): BlocklistEntry | null {
 // MCP server setup
 // ---------------------------------------------------------------------------
 const server = new McpServer({
-  name: "epas-guardrail-server",
+  name: "agent-guardrail",
   version: "1.0.0",
 });
 
@@ -206,7 +206,7 @@ async function main() {
   await server.connect(transport);
   // MCP servers must not write to stdout (it's the protocol channel).
   // Diagnostics go to stderr.
-  process.stderr.write("epas-guardrail MCP server running on stdio\n");
+  process.stderr.write("agent-guardrail MCP server running on stdio\n");
 }
 
 main().catch((err) => {

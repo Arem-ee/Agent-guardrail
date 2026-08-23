@@ -1,5 +1,5 @@
 {
-  "name": "epas-mcp-server",
+  "name": "agent-guardrail",
   "version": "1.0.0",
   "description": "Minimal MCP server with run_command tool and destructive-command guardrails",
   "main": "dist/index.js",
